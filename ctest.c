@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <string.h>
 
 #define WIDTH 50
 #define HEIGHT 50
@@ -10,10 +11,10 @@
 #define PI 3.1415
 
 int canvas[HEIGHT][WIDTH];
+char canvasStr[(HEIGHT + 2) * (WIDTH + 2) * 2 + HEIGHT];
 char GetCh(int data);
 char ch[] = {' ', '`', '.', '^', ',', ':', '~', '"', '<', '!', 'c', 't', '+', '{', 'i', '7', '?', 'u', '3', '0', 'p', 'w', '4', 'A', '8', 'D', 'X', '%', '#', 'H', 'W', 'M'};
 char num[] = {0, 5, 7, 9, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 59, 61, 63, 66, 68, 70};
-
 //绘制函数
 
 void showCanvas();
@@ -34,12 +35,16 @@ void swap(int *a, int *b);
 int main()
 {
     //程序内容
-
-    clearCanvas(0);
-    //drawTria(45, 5, 5, 6, 40, 5, 40);
-    drawLine(0, 0, 33, 33, 65);
-    showCanvas();
-
+    int i = 0;
+    while (1)
+    {
+        clearCanvas(0);
+        //drawTria(45, 5, 5, 6, 40, 5, 40);
+        drawLine(0, sin(0.3 * (i++)) * 20 + 25, 49, 25, 65);
+        consoleClear();
+        showCanvas();
+        Sleep(5);
+    }
     //避免程序自己退出
     system("pause");
     return 0;
@@ -64,7 +69,7 @@ void drawLine(int x1, int y1, int x2, int y2, int color)
         drawPoint(x1 + (x2 - x1) * i / distance, y1 + (y2 - y1) * i / distance, color);
     }
 #else
-//优化后的算法
+    //优化后的算法
     if (fabs(x1 - x2) > fabs(y1 - y2))
     {
         if (x1 > x2)
@@ -234,6 +239,7 @@ void clearCanvas(int color)
  **************************************************************************************/
 void showCanvas()
 {
+#if 0
     //上边框
     for (int x = 0; x < WIDTH + 2; x++)
     {
@@ -260,6 +266,49 @@ void showCanvas()
         printf("@@");
     }
     printf("\n");
+#else
+    int i = 0;
+    //上边框
+    for (int x = 0; x < WIDTH + 2; x++)
+    {
+        //printf("@@");
+        canvasStr[i++] = '@';
+        canvasStr[i++] = '@';
+    }
+    //printf("\n");
+    canvasStr[i++] = '\n';
+
+    for (int y = 0; y < HEIGHT; y++)
+    {
+        //左边框
+        //printf("@@");
+        canvasStr[i++] = '@';
+        canvasStr[i++] = '@';
+        //画布内容
+        for (int x = 0; x < WIDTH; x++)
+        {
+            //printf("%c%c", GetCh(canvas[y][x]), GetCh(canvas[y][x]));
+            canvasStr[i++] = GetCh(canvas[y][x]);
+            canvasStr[i++] = GetCh(canvas[y][x]);
+        }
+        //右边框
+        //printf("@@");
+        canvasStr[i++] = '@';
+        canvasStr[i++] = '@';
+        //printf("\n");
+        canvasStr[i++] = '\n';
+    }
+    //下边框
+    for (int x = 0; x < WIDTH + 2; x++)
+    {
+        //printf("@@");
+        canvasStr[i++] = '@';
+        canvasStr[i++] = '@';
+    }
+    //printf("\n");
+    canvasStr[i++] = '\n';
+    printf("%s", canvasStr);
+#endif
 }
 
 /**************************************************************************************
